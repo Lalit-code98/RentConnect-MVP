@@ -34,7 +34,7 @@ function Footer() {
             <span className="links-header">Categories</span>
             <ul className="links-list">
               <li><Link to="/properties?category=Commercial+Shop">Commercial Shops</Link></li>
-              <li><Link to="/properties?category=Room%2FPG">Rooms / PGs</Link></li>
+              <li><Link to="/properties?category=Residential+Room+%2F+PG">Rooms / PGs</Link></li>
             </ul>
           </div>
         </div>

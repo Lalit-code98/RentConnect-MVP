@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { CATEGORIES, mockProperties } from '../data/mockProperties';
+import { CATEGORIES, getPropertyById } from '../services/propertyService';
 import ContactOwnerSection from '../components/ContactOwnerSection';
 import BookVisitModal from '../components/BookVisitModal';
 import './PropertyDetailsPage.css';
@@ -9,9 +9,51 @@ function PropertyDetailsPage() {
   const { id } = useParams();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [property, setProperty] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [dataInfo, setDataInfo] = useState({ source: 'local', isLive: false });
 
-  // Retrieve selected property by unique ID
-  const property = mockProperties.find((p) => p.id === id);
+  // Retrieve selected property by unique ID using propertyService
+  useEffect(() => {
+    let isMounted = true;
+    async function loadPropertyDetails() {
+      setLoading(true);
+      try {
+        const result = await getPropertyById(id);
+        if (isMounted) {
+          setProperty(result.data);
+          setDataInfo({
+            source: result.source,
+            isLive: result.isLive,
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching property details:', err);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadPropertyDetails();
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="property-details-page container">
+        <Link to="/properties" className="back-link">&larr; Back to all listings</Link>
+        <div className="details-loading-card">
+          <div className="spinner"></div>
+          <p>Loading property details...</p>
+        </div>
+      </div>
+    );
+  }
 
   // If property is not found, display graceful fallback
   if (!property) {
@@ -47,7 +89,7 @@ function PropertyDetailsPage() {
 
   const isCommercial = category === CATEGORIES.COMMERCIAL;
   const fallbackImg = isCommercial ? '/images/shop-placeholder.svg' : '/images/room-placeholder.svg';
-  
+
   // Image gallery array
   const imageGallery = (images && images.length > 0) ? images : (image ? [image] : [fallbackImg]);
   const activeImage = imageGallery[activeImageIndex] || fallbackImg;
@@ -129,7 +171,7 @@ function PropertyDetailsPage() {
               <span>{location}</span>
             </p>
 
-            {/* Availability Badge & Quick Book Action */}
+            {/* Availability Badge, Data Source Badge & Quick Book Action */}
             <div className="header-meta-row">
               {availability && (
                 <div className="availability-tag">
@@ -137,8 +179,17 @@ function PropertyDetailsPage() {
                   <strong>Availability:</strong> {availability}
                 </div>
               )}
-              <button 
-                type="button" 
+              {dataInfo.isLive ? (
+                <span className="data-source-badge live" title="Loaded from Firebase Firestore">
+                  <span className="badge-dot live-dot"></span> Live Firestore
+                </span>
+              ) : (
+                <span className="data-source-badge local" title="Loaded from local sample data fallback">
+                  <span className="badge-dot local-dot"></span> Local Demo Data
+                </span>
+              )}
+              <button
+                type="button"
                 className="book-visit-header-btn"
                 onClick={() => setIsBookingOpen(true)}
                 id="book-visit-btn-main"
@@ -240,7 +291,7 @@ function PropertyDetailsPage() {
           {/* Dedicated Contact Owner Section on Main Flow */}
           <div className="details-card contact-section-card">
             <h2 className="section-heading">Contact Owner Directly</h2>
-            <ContactOwnerSection 
+            <ContactOwnerSection
               ownerName={displayName}
               ownerPhone={displayPhone}
               propertyTitle={title}
@@ -260,8 +311,8 @@ function PropertyDetailsPage() {
               <p className="pricing-subtext">Direct from Owner • Zero Brokerage</p>
 
               {/* Requirement 1: Clearly visible "Book a Visit" button */}
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="book-visit-primary-btn"
                 onClick={() => setIsBookingOpen(true)}
                 id="book-visit-btn-sidebar"
@@ -279,7 +330,7 @@ function PropertyDetailsPage() {
 
             {/* Sidebar Contact Owner Widget */}
             <div className="sidebar-contact-widget">
-              <ContactOwnerSection 
+              <ContactOwnerSection
                 ownerName={displayName}
                 ownerPhone={displayPhone}
                 propertyTitle={title}

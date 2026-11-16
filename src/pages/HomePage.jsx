@@ -1,11 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CATEGORIES, mockProperties } from '../data/mockProperties';
+import { CATEGORIES, getProperties, mockProperties } from '../services/propertyService';
 import './HomePage.css';
 
 function HomePage() {
   const [locationQuery, setLocationQuery] = useState('');
+  const [properties, setProperties] = useState(mockProperties);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    let isMounted = true;
+    async function loadCounts() {
+      try {
+        const res = await getProperties();
+        if (isMounted && res.data) {
+          setProperties(res.data);
+        }
+      } catch (err) {
+        console.error('Error fetching properties on home:', err);
+      }
+    }
+    loadCounts();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -103,7 +122,7 @@ function HomePage() {
 
             <div className="card-footer">
               <span className="card-action-link">
-                Browse Commercial Shops ({mockProperties.filter(p => p.category === CATEGORIES.COMMERCIAL).length})
+                Browse Commercial Shops ({properties.filter(p => p.category === CATEGORIES.COMMERCIAL).length})
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />
@@ -142,7 +161,7 @@ function HomePage() {
 
             <div className="card-footer">
               <span className="card-action-link">
-                Browse Residential Rooms & PGs ({mockProperties.filter(p => p.category === CATEGORIES.RESIDENTIAL).length})
+                Browse Residential Rooms & PGs ({properties.filter(p => p.category === CATEGORIES.RESIDENTIAL).length})
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />

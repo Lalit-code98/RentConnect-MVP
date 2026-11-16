@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { CATEGORIES, mockProperties } from '../data/mockProperties';
+import { CATEGORIES, getProperties } from '../services/propertyService';
 import PropertyCard from '../components/PropertyCard';
 import OwnerContactModal from '../components/OwnerContactModal';
 import './PropertiesPage.css';
@@ -13,7 +13,7 @@ const formatINR = (amount) => {
 function PropertiesPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const rawCategoryParam = searchParams.get('category');
-  
+
   // Normalize URL category parameter
   const resolveCategory = (param) => {
     if (!param || param === 'All') return 'All';
@@ -31,6 +31,15 @@ function PropertiesPage() {
   const initialMinRent = searchParams.get('min') || searchParams.get('minRent') || '';
   const initialMaxRent = searchParams.get('max') || searchParams.get('maxRent') || '';
 
+  // Properties Data State (Live Firestore or Local Fallback)
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [dataInfo, setDataInfo] = useState({
+    source: 'local',
+    isLive: false,
+    reason: '',
+  });
+
   // Filter States
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [locationSearch, setLocationSearch] = useState(initialLocation);
@@ -38,6 +47,36 @@ function PropertiesPage() {
   const [maxRent, setMaxRent] = useState(initialMaxRent);
   const [validationError, setValidationError] = useState('');
   const [selectedPropertyForContact, setSelectedPropertyForContact] = useState(null);
+
+  // Fetch properties from propertyService on component mount
+  useEffect(() => {
+    let isMounted = true;
+    async function loadPropertiesData() {
+      setLoading(true);
+      try {
+        const result = await getProperties();
+        if (isMounted) {
+          setProperties(result.data || []);
+          setDataInfo({
+            source: result.source,
+            isLive: result.isLive,
+            reason: result.reason || '',
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load properties:', err);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadPropertiesData();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Sync state if URL query parameters change (e.g. from homepage category cards or search)
   useEffect(() => {
@@ -101,7 +140,7 @@ function PropertiesPage() {
   };
 
   // COMBINED FILTERING LOGIC
-  const filteredProperties = mockProperties.filter((property) => {
+  const filteredProperties = properties.filter((property) => {
     // If budget validation error exists, do not show any mismatched properties
     if (validationError) {
       return false;
@@ -115,8 +154,8 @@ function PropertiesPage() {
     // 2. Location Search Filter (case-insensitive search against location and title)
     if (locationSearch.trim()) {
       const query = locationSearch.toLowerCase().trim();
-      const matchesLocation = property.location.toLowerCase().includes(query);
-      const matchesTitle = property.title.toLowerCase().includes(query);
+      const matchesLocation = property.location?.toLowerCase().includes(query);
+      const matchesTitle = property.title?.toLowerCase().includes(query);
       if (!matchesLocation && !matchesTitle) {
         return false;
       }
@@ -124,14 +163,14 @@ function PropertiesPage() {
 
     // 3. Minimum Monthly Rent Filter
     if (minRent !== '' && !isNaN(Number(minRent))) {
-      if (property.rent < Number(minRent)) {
+      if (Number(property.rent) < Number(minRent)) {
         return false;
       }
     }
 
     // 4. Maximum Monthly Rent Filter
     if (maxRent !== '' && !isNaN(Number(maxRent))) {
-      if (property.rent > Number(maxRent)) {
+      if (Number(property.rent) > Number(maxRent)) {
         return false;
       }
     }
@@ -139,8 +178,8 @@ function PropertiesPage() {
     return true;
   });
 
-  const commercialCount = mockProperties.filter(p => p.category === CATEGORIES.COMMERCIAL).length;
-  const residentialCount = mockProperties.filter(p => p.category === CATEGORIES.RESIDENTIAL).length;
+  const commercialCount = properties.filter(p => p.category === CATEGORIES.COMMERCIAL).length;
+  const residentialCount = properties.filter(p => p.category === CATEGORIES.RESIDENTIAL).length;
   const isAnyFilterActive = selectedCategory !== 'All' || locationSearch.trim() !== '' || minRent !== '' || maxRent !== '';
 
   return (
@@ -153,7 +192,18 @@ function PropertiesPage() {
               {selectedCategory === 'All' ? 'All Rental Listings' : selectedCategory}
             </h1>
             <p className="page-subtitle">
-              Showing {filteredProperties.length} of {mockProperties.length} verified listings in Surat
+              Showing {filteredProperties.length} of {properties.length} verified listings in Surat
+              {dataInfo.isLive ? (
+                <span className="data-source-badge live" title="Connected to Firebase Firestore">
+                  <span className="badge-dot live-dot"></span>
+                  Live Firestore
+                </span>
+              ) : (
+                <span className="data-source-badge local" title="Firebase not configured in .env.local; using local sample data fallback">
+                  <span className="badge-dot local-dot"></span>
+                  Local Mock Data (Demo)
+                </span>
+              )}
             </p>
           </div>
 
@@ -181,7 +231,7 @@ function PropertiesPage() {
             className={`filter-pill ${selectedCategory === 'All' ? 'pill-active' : ''}`}
             onClick={() => handleCategorySelect('All')}
           >
-            All Spaces ({mockProperties.length})
+            All Spaces ({properties.length})
           </button>
           <button
             type="button"
@@ -216,8 +266,8 @@ function PropertiesPage() {
                 onChange={(e) => setLocationSearch(e.target.value)}
               />
               {locationSearch && (
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="clear-input-btn"
                   onClick={() => setLocationSearch('')}
                   aria-label="Clear location search"
@@ -243,8 +293,8 @@ function PropertiesPage() {
                 onChange={(e) => setMinRent(e.target.value)}
               />
               {minRent && (
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="clear-input-btn"
                   onClick={() => setMinRent('')}
                   aria-label="Clear minimum rent"
@@ -270,8 +320,8 @@ function PropertiesPage() {
                 onChange={(e) => setMaxRent(e.target.value)}
               />
               {maxRent && (
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="clear-input-btn"
                   onClick={() => setMaxRent('')}
                   aria-label="Clear maximum rent"
@@ -329,7 +379,12 @@ function PropertiesPage() {
 
       {/* Property Listings Grid */}
       <section className="listings-grid-section">
-        {filteredProperties.length > 0 ? (
+        {loading ? (
+          <div className="properties-loading-state">
+            <div className="spinner"></div>
+            <p>Loading verified property listings...</p>
+          </div>
+        ) : filteredProperties.length > 0 ? (
           <div className="listings-grid">
             {filteredProperties.map((property) => (
               <PropertyCard
@@ -344,7 +399,7 @@ function PropertiesPage() {
             <div className="empty-icon">🔍</div>
             <h3>No Properties Match Your Search</h3>
             <p>
-              {validationError 
+              {validationError
                 ? 'Please correct the budget range above to view properties.'
                 : 'No properties found matching your combined location and monthly budget criteria.'
               }

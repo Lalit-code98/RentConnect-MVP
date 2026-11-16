@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400" fill="none">
+  <rect width="600" height="400" fill="#E2E8F0"/>
+  <rect x="180" y="110" width="240" height="180" rx="12" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <path d="M220 180H380V270H220V180Z" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2"/>
+  <path d="M200 140H400V180H200V140Z" fill="#3B82F6"/>
+  <text x="300" y="165" font-family="sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">COMMERCIAL SHOP</text>
+  <rect x="250" y="210" width="40" height="60" fill="#93C5FD"/>
+  <rect x="310" y="210" width="40" height="60" fill="#93C5FD"/>
+</svg>

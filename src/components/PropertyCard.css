@@ -1,0 +1,165 @@
+.property-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.property-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+  border-color: #cbd5e1;
+}
+
+.card-media {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background-color: var(--bg-subtle);
+  overflow: hidden;
+}
+
+.property-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.property-card:hover .property-image {
+  transform: scale(1.03);
+}
+
+.category-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  backdrop-filter: blur(8px);
+}
+
+.tag-shop {
+  background-color: rgba(239, 246, 255, 0.95);
+  color: var(--badge-shop-text);
+  border: 1px solid var(--badge-shop-border);
+}
+
+.tag-room {
+  background-color: rgba(236, 253, 245, 0.95);
+  color: var(--badge-room-text);
+  border: 1px solid var(--badge-room-border);
+}
+
+.rent-badge {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background-color: rgba(15, 23, 42, 0.85);
+  color: #ffffff;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.95rem;
+  backdrop-filter: blur(4px);
+}
+
+.rent-badge small {
+  font-size: 0.75rem;
+  font-weight: 400;
+  opacity: 0.85;
+  margin-left: 2px;
+}
+
+.card-content {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  flex: 1;
+}
+
+.property-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--secondary-color);
+  line-height: 1.35;
+}
+
+.property-title a {
+  color: inherit;
+  transition: color 0.15s ease;
+}
+
+.property-title a:hover {
+  color: var(--primary-color);
+}
+
+.property-location {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.property-specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.25rem 0;
+}
+
+.spec-pill {
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: var(--bg-subtle);
+  color: var(--text-secondary);
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.contact-owner-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: var(--primary-color);
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-sm);
+  transition: background-color 0.15s ease;
+}
+
+.contact-owner-btn:hover {
+  background-color: var(--primary-hover);
+}
+
+.view-details-link {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: color 0.15s ease;
+}
+
+.view-details-link:hover {
+  color: var(--primary-color);
+}

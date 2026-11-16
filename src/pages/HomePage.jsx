@@ -1,52 +1,183 @@
-import React from 'react';
-import { mockProperties } from '../data/mockProperties';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
 
 function HomePage() {
-  const shopCount = mockProperties.filter(p => p.category === 'Commercial Shop').length;
-  const pgCount = mockProperties.filter(p => p.category === 'Room/PG').length;
+  const [locationQuery, setLocationQuery] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (locationQuery.trim()) {
+      navigate(`/properties?location=${encodeURIComponent(locationQuery.trim())}`);
+    } else {
+      navigate('/properties');
+    }
+  };
+
+  const handleCategoryClick = (category) => {
+    navigate(`/properties?category=${encodeURIComponent(category)}`);
+  };
 
   return (
-    <div className="home-page">
-      <section className="hero-banner">
-        <div className="container hero-content">
-          <span className="hero-badge">Step 1 — React + Vite Architecture Ready</span>
-          <h1 className="hero-title">
-            Find Your Ideal <span className="highlight-text">Commercial Shop</span> or <span className="highlight-text">Room/PG</span>
+    <div className="home-container">
+      {/* Hero Section */}
+      <section className="hero-section">
+        <div className="container hero-wrapper">
+          {/* Requirement 3: Main Heading */}
+          <h1 className="hero-heading">
+            Find the Right <span className="highlight">Space for You</span>
           </h1>
+
+          {/* Requirement 4: Subtitle */}
           <p className="hero-subtitle">
-            RentConnect connects property owners directly with individuals searching for verified commercial spaces and residential rentals.
+            RentConnect connects property owners directly with individuals searching for 
+            commercial shops and residential rooms/PGs with zero middlemen.
           </p>
 
-          <div className="category-stats-grid">
-            <div className="stat-card">
-              <span className="stat-icon">🏬</span>
-              <div className="stat-info">
-                <h3>Commercial Shops</h3>
-                <p>{shopCount} Properties available</p>
-              </div>
+          {/* Requirements 6 & 7: Location Search Input & Search Property Button */}
+          <form className="search-form" onSubmit={handleSearch}>
+            <div className="search-input-wrapper">
+              <span className="search-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+              </span>
+              <input
+                type="text"
+                id="location-search"
+                className="location-input"
+                placeholder="Enter city, locality, or sector (e.g. Noida, Koramangala, Pune)..."
+                value={locationQuery}
+                onChange={(e) => setLocationQuery(e.target.value)}
+              />
             </div>
-            <div className="stat-card">
-              <span className="stat-icon">🛏️</span>
-              <div className="stat-info">
-                <h3>Rooms / PGs</h3>
-                <p>{pgCount} Properties available</p>
+            <button type="submit" className="search-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              Search Property
+            </button>
+          </form>
+        </div>
+      </section>
+
+      {/* Requirement 5: Category Cards Section */}
+      <section className="categories-section container">
+        <div className="section-header">
+          <span className="section-tag">Rental Categories</span>
+          <h2 className="section-title">What type of space are you looking for?</h2>
+          <p className="section-desc">Select a category to browse verified listings tailored to your requirements</p>
+        </div>
+
+        <div className="category-cards-grid">
+          {/* Card 1: Find a Commercial Shop */}
+          <div 
+            className="category-card commercial-card"
+            onClick={() => handleCategoryClick('Commercial Shop')}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Enter' && handleCategoryClick('Commercial Shop')}
+            id="category-commercial-shop"
+          >
+            <div className="card-top">
+              <div className="card-icon-wrapper commercial-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                  <line x1="8" y1="21" x2="16" y2="21" />
+                  <line x1="12" y1="17" x2="12" y2="21" />
+                  <path d="M7 8h10" />
+                  <path d="M7 12h5" />
+                </svg>
               </div>
+              <span className="category-badge shop-badge">Commercial</span>
+            </div>
+
+            <div className="card-body">
+              <h3 className="card-title">Find a Commercial Shop</h3>
+              <p className="card-description">
+                Explore retail shops, showrooms, boutique stores, clinics, and commercial offices with high footfall.
+              </p>
+            </div>
+
+            <div className="card-footer">
+              <span className="card-action-link">
+                Browse Commercial Shops
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          {/* Card 2: Find a Room / PG */}
+          <div 
+            className="category-card room-card"
+            onClick={() => handleCategoryClick('Room/PG')}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Enter' && handleCategoryClick('Room/PG')}
+            id="category-room-pg"
+          >
+            <div className="card-top">
+              <div className="card-icon-wrapper room-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M2 4v16" />
+                  <path d="M2 8h18a2 2 0 0 1 2 2v10" />
+                  <path d="M2 17h20" />
+                  <path d="M6 8v9" />
+                </svg>
+              </div>
+              <span className="category-badge room-badge">Residential</span>
+            </div>
+
+            <div className="card-body">
+              <h3 className="card-title">Find a Room / PG</h3>
+              <p className="card-description">
+                Discover furnished single & sharing rooms, student hostels, and PG accommodations with meals and WiFi.
+              </p>
+            </div>
+
+            <div className="card-footer">
+              <span className="card-action-link">
+                Browse Rooms & PGs
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </span>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="setup-status-section container">
-        <div className="status-box">
-          <h2 className="status-heading">✅ Step 1 Initialization Complete</h2>
-          <ul className="status-checklist">
-            <li><strong>Framework:</strong> React 18 configured with Vite build tooling</li>
-            <li><strong>Router:</strong> React Router DOM v6 wired with routes</li>
-            <li><strong>Styling:</strong> Pure CSS design system with custom variables and responsive rules</li>
-            <li><strong>Dataset:</strong> Initialized mock dataset ({mockProperties.length} verified sample properties)</li>
-            <li><strong>Next Step (Step 2):</strong> Building Property Cards, Category Filter, and Navbar controls</li>
-          </ul>
+      {/* Trust & Highlights Section */}
+      <section className="features-preview container">
+        <div className="preview-grid">
+          <div className="preview-item">
+            <div className="preview-icon">📍</div>
+            <div className="preview-text">
+              <h4>Location-Based Search</h4>
+              <p>Filter properties by your preferred city, locality, or sector</p>
+            </div>
+          </div>
+          <div className="preview-item">
+            <div className="preview-icon">💰</div>
+            <div className="preview-text">
+              <h4>Budget Filter</h4>
+              <p>Find spaces matching your exact monthly rent budget</p>
+            </div>
+          </div>
+          <div className="preview-item">
+            <div className="preview-icon">📞</div>
+            <div className="preview-text">
+              <h4>Direct Owner Contact</h4>
+              <p>Connect with property owners directly with one click</p>
+            </div>
+          </div>
         </div>
       </section>
     </div>

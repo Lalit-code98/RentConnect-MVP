@@ -1,13 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { mockProperties } from '../data/mockProperties';
+import { CATEGORIES, mockProperties } from '../data/mockProperties';
 import PropertyCard from '../components/PropertyCard';
 import OwnerContactModal from '../components/OwnerContactModal';
 import './PropertiesPage.css';
 
 function PropertiesPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialCategory = searchParams.get('category') || 'All';
+  const rawCategoryParam = searchParams.get('category');
+  
+  // Normalize category parameter
+  const resolveCategory = (param) => {
+    if (!param || param === 'All') return 'All';
+    if (param.toLowerCase().includes('commercial') || param.toLowerCase().includes('shop')) {
+      return CATEGORIES.COMMERCIAL;
+    }
+    if (param.toLowerCase().includes('room') || param.toLowerCase().includes('pg') || param.toLowerCase().includes('residential')) {
+      return CATEGORIES.RESIDENTIAL;
+    }
+    return 'All';
+  };
+
+  const initialCategory = resolveCategory(rawCategoryParam);
   const initialLocation = searchParams.get('location') || '';
 
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
@@ -15,9 +29,9 @@ function PropertiesPage() {
   const [maxBudget, setMaxBudget] = useState('All');
   const [selectedPropertyForContact, setSelectedPropertyForContact] = useState(null);
 
-  // Sync state if URL query parameters change (e.g. navigation from navbar or category cards)
+  // Sync state if URL query parameters change
   useEffect(() => {
-    const cat = searchParams.get('category') || 'All';
+    const cat = resolveCategory(searchParams.get('category'));
     const loc = searchParams.get('location') || '';
     setSelectedCategory(cat);
     setLocationSearch(loc);
@@ -42,7 +56,7 @@ function PropertiesPage() {
       return false;
     }
 
-    // 2. Location Search Filter (case-insensitive substring match)
+    // 2. Location Search Filter (case-insensitive search against location and title)
     if (locationSearch.trim()) {
       const query = locationSearch.toLowerCase().trim();
       const matchesLocation = property.location.toLowerCase().includes(query);
@@ -63,22 +77,25 @@ function PropertiesPage() {
     return true;
   });
 
+  const commercialCount = mockProperties.filter(p => p.category === CATEGORIES.COMMERCIAL).length;
+  const residentialCount = mockProperties.filter(p => p.category === CATEGORIES.RESIDENTIAL).length;
+
   return (
     <div className="properties-page container">
-      {/* Top Controls: Search, Category, and Budget Filter */}
+      {/* Top Filter Panel */}
       <section className="filter-panel">
         <div className="filter-header">
           <div>
             <h1 className="page-title">
-              {selectedCategory === 'All' ? 'All Rental Listings' : `${selectedCategory}s`}
+              {selectedCategory === 'All' ? 'All Rental Listings' : selectedCategory}
             </h1>
             <p className="page-subtitle">
-              Showing {filteredProperties.length} verified {selectedCategory === 'All' ? 'spaces' : selectedCategory.toLowerCase()} available for rent
+              Showing {filteredProperties.length} verified {selectedCategory === 'All' ? 'properties' : selectedCategory.toLowerCase()} available for rent in Surat
             </p>
           </div>
         </div>
 
-        {/* Feature 1: Category Filter Buttons */}
+        {/* Category Filter Tabs */}
         <div className="category-filter-bar">
           <button
             type="button"
@@ -90,24 +107,23 @@ function PropertiesPage() {
           <button
             type="button"
             id="filter-btn-commercial"
-            className={`filter-pill ${selectedCategory === 'Commercial Shop' ? 'pill-active' : ''}`}
-            onClick={() => handleCategorySelect('Commercial Shop')}
+            className={`filter-pill ${selectedCategory === CATEGORIES.COMMERCIAL ? 'pill-active' : ''}`}
+            onClick={() => handleCategorySelect(CATEGORIES.COMMERCIAL)}
           >
-            🏬 Commercial Shops ({mockProperties.filter(p => p.category === 'Commercial Shop').length})
+            🏬 Commercial Shops ({commercialCount})
           </button>
           <button
             type="button"
-            id="filter-btn-room"
-            className={`filter-pill ${selectedCategory === 'Room/PG' ? 'pill-active' : ''}`}
-            onClick={() => handleCategorySelect('Room/PG')}
+            id="filter-btn-residential"
+            className={`filter-pill ${selectedCategory === CATEGORIES.RESIDENTIAL ? 'pill-active' : ''}`}
+            onClick={() => handleCategorySelect(CATEGORIES.RESIDENTIAL)}
           >
-            🛏️ Rooms / PGs ({mockProperties.filter(p => p.category === 'Room/PG').length})
+            🛏️ Residential Rooms / PGs ({residentialCount})
           </button>
         </div>
 
-        {/* Search & Budget Filter Controls */}
+        {/* Location & Budget Filter Controls */}
         <div className="filter-inputs-row">
-          {/* Feature 2: Location Search Input */}
           <div className="input-group search-group">
             <label htmlFor="prop-location">Location Search</label>
             <div className="input-with-icon">
@@ -115,7 +131,7 @@ function PropertiesPage() {
               <input
                 id="prop-location"
                 type="text"
-                placeholder="Search city, sector, or locality..."
+                placeholder="Search by area (e.g. Adajan, Vesu, City Light)..."
                 value={locationSearch}
                 onChange={(e) => setLocationSearch(e.target.value)}
               />
@@ -131,7 +147,6 @@ function PropertiesPage() {
             </div>
           </div>
 
-          {/* Feature 3: Monthly Rent Budget Filter */}
           <div className="input-group budget-group">
             <label htmlFor="prop-budget">Max Monthly Budget</label>
             <select
@@ -141,16 +156,16 @@ function PropertiesPage() {
               className="budget-select"
             >
               <option value="All">Any Monthly Budget</option>
+              <option value="5000">Up to ₹5,000 / month</option>
               <option value="10000">Up to ₹10,000 / month</option>
+              <option value="15000">Up to ₹15,000 / month</option>
               <option value="20000">Up to ₹20,000 / month</option>
-              <option value="30000">Up to ₹30,000 / month</option>
-              <option value="50000">Up to ₹50,000 / month</option>
             </select>
           </div>
         </div>
       </section>
 
-      {/* Feature 4: Property Listings Grid */}
+      {/* Property Listings Grid */}
       <section className="listings-grid-section">
         {filteredProperties.length > 0 ? (
           <div className="listings-grid">
@@ -167,8 +182,8 @@ function PropertiesPage() {
             <div className="empty-icon">🔍</div>
             <h3>No Properties Found</h3>
             <p>
-              We couldn't find any listings matching your current filter criteria.
-              Try adjusting your location or budget.
+              We couldn't find any listings matching your current filter criteria in Surat.
+              Try adjusting your area or budget.
             </p>
             <button
               type="button"
@@ -186,7 +201,7 @@ function PropertiesPage() {
         )}
       </section>
 
-      {/* Feature 5: Owner Contact Modal */}
+      {/* Owner Contact Modal */}
       {selectedPropertyForContact && (
         <OwnerContactModal
           property={selectedPropertyForContact}

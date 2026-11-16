@@ -1,18 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { CATEGORIES } from '../data/mockProperties';
 import './PropertyCard.css';
 
 function PropertyCard({ property, onContactClick }) {
-  const { id, title, category, rent, location, images, details } = property;
-  const isShop = category === 'Commercial Shop';
-
+  const { id, title, category, rent, location, image, images, details, ownerName, ownerPhone, owner } = property;
+  const isShop = category === CATEGORIES.COMMERCIAL;
   const fallbackImg = isShop ? '/images/shop-placeholder.svg' : '/images/room-placeholder.svg';
+  const displayImage = image || (images && images[0]) || fallbackImg;
+  const displayName = ownerName || (owner && owner.name);
+  const displayPhone = ownerPhone || (owner && owner.phone);
 
   return (
-    <div className="property-card">
+    <div className="property-card" id={`card-${id}`}>
       <div className="card-media">
         <img 
-          src={images[0] || fallbackImg} 
+          src={displayImage} 
           alt={title} 
           className="property-image"
           loading="lazy" 
@@ -44,10 +47,20 @@ function PropertyCard({ property, onContactClick }) {
 
         {details && (
           <div className="property-specs">
-            <span className="spec-pill">{details.area}</span>
-            <span className="spec-pill">{details.furnishing}</span>
+            {details.area && <span className="spec-pill">📐 {details.area}</span>}
+            {details.roomType && <span className="spec-pill">🛏️ {details.roomType}</span>}
+            {details.furnishing && <span className="spec-pill">🛋️ {details.furnishing}</span>}
+            {details.floor && <span className="spec-pill">🏢 {details.floor}</span>}
           </div>
         )}
+
+        <div className="owner-card-preview">
+          <span className="owner-preview-label">Owner:</span>
+          <span className="owner-preview-name">{displayName}</span>
+          <a href={`tel:${displayPhone}`} className="owner-preview-phone" title="Call Owner">
+            📞 {displayPhone}
+          </a>
+        </div>
 
         <div className="card-actions">
           <button 

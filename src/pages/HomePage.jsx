@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CATEGORIES, mockProperties } from '../data/mockProperties';
 import './HomePage.css';
 
 function HomePage() {
@@ -24,18 +25,16 @@ function HomePage() {
       {/* Hero Section */}
       <section className="hero-section">
         <div className="container hero-wrapper">
-          {/* Requirement 3: Main Heading */}
           <h1 className="hero-heading">
             Find the Right <span className="highlight">Space for You</span>
           </h1>
 
-          {/* Requirement 4: Subtitle */}
           <p className="hero-subtitle">
             RentConnect connects property owners directly with individuals searching for 
             commercial shops and residential rooms/PGs with zero middlemen.
           </p>
 
-          {/* Requirements 6 & 7: Location Search Input & Search Property Button */}
+          {/* Location Search Input & Search Property Button */}
           <form className="search-form" onSubmit={handleSearch}>
             <div className="search-input-wrapper">
               <span className="search-icon" aria-hidden="true">
@@ -48,7 +47,7 @@ function HomePage() {
                 type="text"
                 id="location-search"
                 className="location-input"
-                placeholder="Enter city, locality, or sector (e.g. Noida, Koramangala, Pune)..."
+                placeholder="Enter city, locality, or area (e.g. Adajan, Vesu, City Light)..."
                 value={locationQuery}
                 onChange={(e) => setLocationQuery(e.target.value)}
               />
@@ -64,7 +63,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Requirement 5: Category Cards Section */}
+      {/* Two Category Cards */}
       <section className="categories-section container">
         <div className="section-header">
           <span className="section-tag">Rental Categories</span>
@@ -76,10 +75,10 @@ function HomePage() {
           {/* Card 1: Find a Commercial Shop */}
           <div 
             className="category-card commercial-card"
-            onClick={() => handleCategoryClick('Commercial Shop')}
+            onClick={() => handleCategoryClick(CATEGORIES.COMMERCIAL)}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => e.key === 'Enter' && handleCategoryClick('Commercial Shop')}
+            onKeyDown={(e) => e.key === 'Enter' && handleCategoryClick(CATEGORIES.COMMERCIAL)}
             id="category-commercial-shop"
           >
             <div className="card-top">
@@ -98,13 +97,13 @@ function HomePage() {
             <div className="card-body">
               <h3 className="card-title">Find a Commercial Shop</h3>
               <p className="card-description">
-                Explore retail shops, showrooms, boutique stores, clinics, and commercial offices with high footfall.
+                Explore retail shops, showrooms, boutique stores, clinics, and offices across Adajan, Vesu, and City Light.
               </p>
             </div>
 
             <div className="card-footer">
               <span className="card-action-link">
-                Browse Commercial Shops
+                Browse Commercial Shops ({mockProperties.filter(p => p.category === CATEGORIES.COMMERCIAL).length})
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />
@@ -116,10 +115,10 @@ function HomePage() {
           {/* Card 2: Find a Room / PG */}
           <div 
             className="category-card room-card"
-            onClick={() => handleCategoryClick('Room/PG')}
+            onClick={() => handleCategoryClick(CATEGORIES.RESIDENTIAL)}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => e.key === 'Enter' && handleCategoryClick('Room/PG')}
+            onKeyDown={(e) => e.key === 'Enter' && handleCategoryClick(CATEGORIES.RESIDENTIAL)}
             id="category-room-pg"
           >
             <div className="card-top">
@@ -137,13 +136,13 @@ function HomePage() {
             <div className="card-body">
               <h3 className="card-title">Find a Room / PG</h3>
               <p className="card-description">
-                Discover furnished single & sharing rooms, student hostels, and PG accommodations with meals and WiFi.
+                Discover furnished single & shared rooms, student hostels, and PG accommodations with meals and WiFi.
               </p>
             </div>
 
             <div className="card-footer">
               <span className="card-action-link">
-                Browse Rooms & PGs
+                Browse Residential Rooms & PGs ({mockProperties.filter(p => p.category === CATEGORIES.RESIDENTIAL).length})
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />
@@ -161,21 +160,21 @@ function HomePage() {
             <div className="preview-icon">📍</div>
             <div className="preview-text">
               <h4>Location-Based Search</h4>
-              <p>Filter properties by your preferred city, locality, or sector</p>
+              <p>Filter properties by your preferred area like Adajan, Vesu, or City Light</p>
             </div>
           </div>
           <div className="preview-item">
             <div className="preview-icon">💰</div>
             <div className="preview-text">
               <h4>Budget Filter</h4>
-              <p>Find spaces matching your exact monthly rent budget</p>
+              <p>Find spaces matching your exact monthly rent budget from ₹4,500 to ₹18,000</p>
             </div>
           </div>
           <div className="preview-item">
             <div className="preview-icon">📞</div>
             <div className="preview-text">
               <h4>Direct Owner Contact</h4>
-              <p>Connect with property owners directly with one click</p>
+              <p>Connect with property owners directly with verified contact numbers</p>
             </div>
           </div>
         </div>

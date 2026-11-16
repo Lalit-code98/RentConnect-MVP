@@ -13,7 +13,8 @@ export const mockProperties = [
     category: CATEGORIES.COMMERCIAL,
     location: "Adajan, Surat",
     rent: 15000,
-    description: "Main road facing commercial shop located in a busy market area of Adajan. Ideal for retail stores, electronics, pharmacy, or a boutique showroom.",
+    availability: "Available for Immediate Move-in",
+    description: "Main road facing commercial shop located in a busy market area of Adajan. Ideal for retail stores, electronics, pharmacy, or a boutique showroom. Features heavy foot traffic, wide road frontage, and dedicated customer parking space.",
     image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
     images: [
       "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
@@ -23,7 +24,8 @@ export const mockProperties = [
       area: "350 sq.ft",
       furnishing: "Semi-Furnished",
       floor: "Ground Floor",
-      suitableFor: "Retail Store, Clinic, Office"
+      suitableFor: "Retail Store, Clinic, Pharmacy, Office",
+      availableFor: "All Commercial & Retail Businesses"
     },
     ownerName: "Haresh Patel",
     ownerPhone: "+91 98250 12345",
@@ -39,7 +41,8 @@ export const mockProperties = [
     category: CATEGORIES.COMMERCIAL,
     location: "Vesu, Surat",
     rent: 12000,
-    description: "Compact and modern retail space situated near VIP Road in Vesu. Excellent visibility with dedicated parking space and 24/7 water supply.",
+    availability: "Available for Immediate Move-in",
+    description: "Compact and modern retail space situated near VIP Road in Vesu. Excellent visibility with dedicated parking space, 24/7 water supply, and easy access to Surat's prime residential hubs.",
     image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80",
     images: [
       "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80",
@@ -49,7 +52,8 @@ export const mockProperties = [
       area: "280 sq.ft",
       furnishing: "Unfurnished",
       floor: "1st Floor",
-      suitableFor: "Boutique, Salon, Studio"
+      suitableFor: "Boutique, Salon, Studio, Agency",
+      availableFor: "Commercial Startups & Small Businesses"
     },
     ownerName: "Pravin Shah",
     ownerPhone: "+91 98980 54321",
@@ -65,7 +69,8 @@ export const mockProperties = [
     category: CATEGORIES.COMMERCIAL,
     location: "City Light, Surat",
     rent: 18000,
-    description: "High footfall corner shop in a prestigious commercial complex in City Light. Features wide glass frontage and power backup.",
+    availability: "Available from 1st of Next Month",
+    description: "High footfall corner shop in a prestigious commercial complex in City Light. Features wide glass frontage, full commercial interior fit-out, high ceiling, and full power backup.",
     image: "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&w=800&q=80",
     images: [
       "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&w=800&q=80",
@@ -75,7 +80,8 @@ export const mockProperties = [
       area: "420 sq.ft",
       furnishing: "Fully Furnished",
       floor: "Ground Floor",
-      suitableFor: "Showroom, Cafe, Brand Outlet"
+      suitableFor: "Showroom, Cafe, Brand Outlet, Jewelers",
+      availableFor: "Established Brands & Retailers"
     },
     ownerName: "Rajesh Desai",
     ownerPhone: "+91 98795 67890",
@@ -93,7 +99,8 @@ export const mockProperties = [
     category: CATEGORIES.RESIDENTIAL,
     location: "Adajan, Surat",
     rent: 6000,
-    description: "Fully-managed PG facility with attached washroom, high-speed WiFi, RO drinking water, and wholesome home-style meals included.",
+    availability: "Ready for Immediate Occupancy",
+    description: "Fully-managed PG facility with attached washroom, high-speed WiFi, RO drinking water, and wholesome home-style meals included 3 times daily. Located within walking distance to bus stops and markets.",
     image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80",
     images: [
       "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80",
@@ -102,7 +109,7 @@ export const mockProperties = [
     details: {
       roomType: "Single / Twin PG",
       furnishing: "Fully Furnished",
-      amenities: "Meals, WiFi, Housekeeping, Geyser",
+      amenities: "Meals Included, WiFi, Daily Housekeeping, Geyser, RO Water",
       availableFor: "Students & Working Professionals"
     },
     ownerName: "Sanjay Mehta",
@@ -119,7 +126,8 @@ export const mockProperties = [
     category: CATEGORIES.RESIDENTIAL,
     location: "Vesu, Surat",
     rent: 5000,
-    description: "Private single room in a peaceful residential apartment in Vesu. Comes with a private balcony, wardrobe, bed with mattress, and study table.",
+    availability: "Ready for Immediate Occupancy",
+    description: "Private single room in a peaceful residential apartment in Vesu. Comes with a private balcony, wardrobe, bed with mattress, study table, ceiling fan, and access to kitchen facilities.",
     image: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=800&q=80",
     images: [
       "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=800&q=80",
@@ -128,8 +136,8 @@ export const mockProperties = [
     details: {
       roomType: "Private Single Room",
       furnishing: "Semi-Furnished",
-      amenities: "Balcony, Power Backup, Lift",
-      availableFor: "Bachelors / Students"
+      amenities: "Private Balcony, Power Backup, Elevator, Parking",
+      availableFor: "Bachelors & College Students"
     },
     ownerName: "Kishore Jariwala",
     ownerPhone: "+91 98241 33445",
@@ -145,7 +153,8 @@ export const mockProperties = [
     category: CATEGORIES.RESIDENTIAL,
     location: "City Light, Surat",
     rent: 4500,
-    description: "Budget-friendly 2-sharing room in prime City Light area, close to colleges, shopping hubs, and public transport. Clean washroom and daily water supply.",
+    availability: "Ready for Immediate Occupancy",
+    description: "Budget-friendly 2-sharing room in prime City Light area, close to colleges, shopping hubs, and public transport. Clean washroom, individual cupboards, study desks, and daily municipal water supply.",
     image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80",
     images: [
       "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80",
@@ -154,8 +163,8 @@ export const mockProperties = [
     details: {
       roomType: "Double Sharing",
       furnishing: "Fully Furnished",
-      amenities: "WiFi, Refrigerator, RO Water",
-      availableFor: "Students / Boys / Girls"
+      amenities: "High-Speed WiFi, Refrigerator, RO Water, Bed with Storage",
+      availableFor: "Students & Bachelors"
     },
     ownerName: "Dinesh Choksi",
     ownerPhone: "+91 99099 88776",

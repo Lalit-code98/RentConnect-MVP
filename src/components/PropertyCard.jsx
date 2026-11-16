@@ -4,15 +4,30 @@ import { CATEGORIES } from '../data/mockProperties';
 import './PropertyCard.css';
 
 function PropertyCard({ property, onContactClick }) {
-  const { id, title, category, rent, location, image, images, details, ownerName, ownerPhone, owner } = property;
-  const isShop = category === CATEGORIES.COMMERCIAL;
-  const fallbackImg = isShop ? '/images/shop-placeholder.svg' : '/images/room-placeholder.svg';
+  const { 
+    id, 
+    title, 
+    category, 
+    rent, 
+    location, 
+    description,
+    image, 
+    images, 
+    details, 
+    ownerName, 
+    ownerPhone, 
+    owner 
+  } = property;
+
+  const isCommercial = category === CATEGORIES.COMMERCIAL;
+  const fallbackImg = isCommercial ? '/images/shop-placeholder.svg' : '/images/room-placeholder.svg';
   const displayImage = image || (images && images[0]) || fallbackImg;
   const displayName = ownerName || (owner && owner.name);
   const displayPhone = ownerPhone || (owner && owner.phone);
 
   return (
-    <div className="property-card" id={`card-${id}`}>
+    <article className="property-card" id={`card-${id}`}>
+      {/* 1. Consistent Property Image */}
       <div className="card-media">
         <img 
           src={displayImage} 
@@ -24,61 +39,100 @@ function PropertyCard({ property, onContactClick }) {
             e.currentTarget.src = fallbackImg;
           }}
         />
-        <span className={`category-tag ${isShop ? 'tag-shop' : 'tag-room'}`}>
-          {category}
+
+        {/* 5. Category Badge */}
+        <span className={`category-tag ${isCommercial ? 'tag-commercial' : 'tag-residential'}`}>
+          {isCommercial ? '🏬 Commercial Shop' : '🛏️ Room / PG'}
         </span>
+
+        {/* 3. Monthly Rent Badge (INR formatting) */}
         <div className="rent-badge">
-          ₹{rent.toLocaleString('en-IN')}<small>/mo</small>
+          ₹{rent.toLocaleString('en-IN')}<small>/month</small>
         </div>
       </div>
 
       <div className="card-content">
-        <h3 className="property-title">
+        {/* 2. Property Title */}
+        <h3 className="property-title" title={title}>
           <Link to={`/property/${id}`}>{title}</Link>
         </h3>
 
+        {/* 4. Location */}
         <p className="property-location">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
             <circle cx="12" cy="10" r="3" />
           </svg>
-          {location}
+          <span>{location}</span>
         </p>
 
-        {details && (
-          <div className="property-specs">
-            {details.area && <span className="spec-pill">📐 {details.area}</span>}
-            {details.roomType && <span className="spec-pill">🛏️ {details.roomType}</span>}
-            {details.furnishing && <span className="spec-pill">🛋️ {details.furnishing}</span>}
-            {details.floor && <span className="spec-pill">🏢 {details.floor}</span>}
-          </div>
-        )}
-
-        <div className="owner-card-preview">
-          <span className="owner-preview-label">Owner:</span>
-          <span className="owner-preview-name">{displayName}</span>
-          <a href={`tel:${displayPhone}`} className="owner-preview-phone" title="Call Owner">
-            📞 {displayPhone}
-          </a>
+        {/* Category-Specific Specifications */}
+        <div className="property-specs-container">
+          {isCommercial ? (
+            /* Commercial Shop: Display Shop Size in square feet */
+            <div className="spec-item commercial-spec">
+              <span className="spec-label">Shop Size:</span>
+              <strong className="spec-value highlight-spec">📐 {details?.area || 'N/A'}</strong>
+              {details?.furnishing && <span className="spec-sub">({details.furnishing})</span>}
+            </div>
+          ) : (
+            /* Room/PG: Display Room Type and Facilities */
+            <div className="residential-specs">
+              <div className="spec-item">
+                <span className="spec-label">Room Type:</span>
+                <strong className="spec-value">🛏️ {details?.roomType || 'Standard Room'}</strong>
+              </div>
+              {details?.amenities && (
+                <div className="spec-item facilities-spec">
+                  <span className="spec-label">Facilities:</span>
+                  <span className="spec-facilities-text" title={details.amenities}>
+                    ✨ {details.amenities}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
-        <div className="card-actions">
-          <button 
-            type="button" 
-            className="contact-owner-btn"
-            onClick={() => onContactClick(property)}
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+        {/* 6. Short Description */}
+        <p className="property-description" title={description}>
+          {description}
+        </p>
+
+        {/* Owner Info Snippet */}
+        <div className="card-owner-snippet">
+          <span className="owner-label">Owner:</span>
+          <span className="owner-name-text">{displayName}</span>
+          {displayPhone && (
+            <a href={`tel:${displayPhone.replace(/\s+/g, '')}`} className="owner-call-link" title="Call Owner Directly">
+              📞 {displayPhone}
+            </a>
+          )}
+        </div>
+
+        {/* Card Action Buttons: 7. View Details Button & Contact Owner */}
+        <div className="card-actions-wrapper">
+          <Link to={`/property/${id}`} className="view-details-btn">
+            View Details
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
             </svg>
-            Contact Owner
-          </button>
-          <Link to={`/property/${id}`} className="view-details-link">
-            Details &rarr;
           </Link>
+
+          {onContactClick && (
+            <button 
+              type="button" 
+              className="quick-contact-btn"
+              onClick={() => onContactClick(property)}
+              title="Quick Contact Modal"
+            >
+              Contact
+            </button>
+          )}
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 

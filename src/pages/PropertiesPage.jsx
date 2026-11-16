@@ -6,7 +6,7 @@ import OwnerContactModal from '../components/OwnerContactModal';
 import './PropertiesPage.css';
 
 // Helper for Indian Rupee (INR) currency formatting
-export const formatINR = (amount) => {
+const formatINR = (amount) => {
   return '₹' + Number(amount).toLocaleString('en-IN');
 };
 

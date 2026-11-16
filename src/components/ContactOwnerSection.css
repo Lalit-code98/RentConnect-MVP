@@ -1,0 +1,118 @@
+/* ContactOwnerSection Styles */
+
+.contact-owner-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.contact-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.owner-avatar-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: #eff6ff;
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #bfdbfe;
+  flex-shrink: 0;
+}
+
+.owner-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.owner-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #059669;
+}
+
+.owner-full-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--secondary-color);
+  margin: 0;
+}
+
+.owner-phone-display-box {
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.phone-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.phone-number-value {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--secondary-color);
+  letter-spacing: 0.02em;
+}
+
+/* Call Owner Primary Button */
+.call-owner-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background-color: #16a34a;
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  box-shadow: 0 4px 10px rgba(22, 163, 74, 0.25);
+  transition: all 0.15s ease-in-out;
+}
+
+.call-owner-btn:hover {
+  background-color: #15803d;
+  box-shadow: 0 6px 14px rgba(22, 163, 74, 0.35);
+  transform: translateY(-2px);
+}
+
+.call-owner-btn:active {
+  transform: translateY(0);
+}
+
+.call-helper-text {
+  font-size: 0.825rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  text-align: center;
+  margin: 0;
+}
+
+.call-helper-text strong {
+  color: var(--secondary-color);
+}

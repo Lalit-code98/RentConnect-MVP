@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { CATEGORIES, mockProperties } from '../data/mockProperties';
+import ContactOwnerSection from '../components/ContactOwnerSection';
 import './PropertyDetailsPage.css';
 
 function PropertyDetailsPage() {
@@ -51,8 +52,6 @@ function PropertyDetailsPage() {
 
   const displayName = ownerName || (owner && owner.name) || 'Property Owner';
   const displayPhone = ownerPhone || (owner && owner.phone) || '';
-  const cleanPhone = displayPhone.replace(/[^0-9+]/g, '');
-  const displayEmail = (owner && owner.email) || 'contact@rentconnect.com';
 
   return (
     <div className="property-details-page container">
@@ -70,7 +69,7 @@ function PropertyDetailsPage() {
       </nav>
 
       <div className="details-layout-grid">
-        {/* Main Column (Images, Overview, Specs, Description) */}
+        {/* Main Column (Images, Overview, Specs, Description, Contact Section) */}
         <div className="details-main-column">
           {/* Property Image Gallery */}
           <div className="gallery-card">
@@ -219,9 +218,19 @@ function PropertyDetailsPage() {
             <h2 className="section-heading">Property Description</h2>
             <p className="full-description-text">{description}</p>
           </div>
+
+          {/* Dedicated Contact Owner Section on Main Flow */}
+          <div className="details-card contact-section-card">
+            <h2 className="section-heading">Contact Owner Directly</h2>
+            <ContactOwnerSection 
+              ownerName={displayName}
+              ownerPhone={displayPhone}
+              propertyTitle={title}
+            />
+          </div>
         </div>
 
-        {/* Sidebar: Sticky Pricing & Contact Owner Section */}
+        {/* Sidebar: Sticky Pricing & Call Owner Card */}
         <aside className="details-sidebar-column">
           <div className="sticky-sidebar-card">
             {/* Rent Pricing Block */}
@@ -233,68 +242,13 @@ function PropertyDetailsPage() {
               <p className="pricing-subtext">Direct from Owner • Zero Brokerage</p>
             </div>
 
-            {/* Contact Owner Section */}
-            <div className="contact-owner-section">
-              <h3 className="contact-section-title">Contact Property Owner</h3>
-              
-              <div className="owner-profile-card">
-                <div className="owner-avatar">
-                  {displayName.charAt(0)}
-                </div>
-                <div className="owner-meta">
-                  <span className="verified-badge">✓ Verified Owner</span>
-                  <h4 className="owner-name">{displayName}</h4>
-                  <p className="owner-location">📍 {location}</p>
-                </div>
-              </div>
-
-              {/* Direct Communication Buttons */}
-              <div className="contact-cta-buttons">
-                {displayPhone && (
-                  <a 
-                    href={`tel:${cleanPhone}`} 
-                    className="contact-action-btn phone-call-btn"
-                  >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                    </svg>
-                    <span>Call {displayPhone}</span>
-                  </a>
-                )}
-
-                {displayPhone && (
-                  <a 
-                    href={`https://wa.me/${cleanPhone.replace('+', '')}?text=${encodeURIComponent(`Hello ${displayName}, I am inquiring about "${title}" listed on RentConnect for ₹${rent.toLocaleString('en-IN')}/month.`)}`} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="contact-action-btn whatsapp-btn"
-                  >
-                    <span className="whatsapp-icon" aria-hidden="true">💬</span>
-                    <span>Chat on WhatsApp</span>
-                  </a>
-                )}
-
-                {displayEmail && (
-                  <a 
-                    href={`mailto:${displayEmail}?subject=${encodeURIComponent(`Inquiry for ${title}`)}&body=${encodeURIComponent(`Hello ${displayName},\n\nI am interested in your property "${title}" located in ${location} listed on RentConnect for ₹${rent.toLocaleString('en-IN')}/month.\n\nPlease let me know when we can schedule a visit.\n\nThank you!`)}`} 
-                    className="contact-action-btn email-btn"
-                  >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                      <polyline points="22,6 12,13 2,6" />
-                    </svg>
-                    <span>Email Owner</span>
-                  </a>
-                )}
-              </div>
-
-              {/* Safety notice for renters */}
-              <div className="security-notice">
-                <span className="notice-icon">🛡️</span>
-                <p className="notice-text">
-                  <strong>RentConnect Safety Tip:</strong> Always visit and inspect the property in person before paying advance rent.
-                </p>
-              </div>
+            {/* Sidebar Contact Owner Widget */}
+            <div className="sidebar-contact-widget">
+              <ContactOwnerSection 
+                ownerName={displayName}
+                ownerPhone={displayPhone}
+                propertyTitle={title}
+              />
             </div>
           </div>
         </aside>

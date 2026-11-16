@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { CATEGORIES, mockProperties } from '../data/mockProperties';
 import ContactOwnerSection from '../components/ContactOwnerSection';
+import BookVisitModal from '../components/BookVisitModal';
 import './PropertyDetailsPage.css';
 
 function PropertyDetailsPage() {
   const { id } = useParams();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
 
   // Retrieve selected property by unique ID
   const property = mockProperties.find((p) => p.id === id);
@@ -127,13 +129,29 @@ function PropertyDetailsPage() {
               <span>{location}</span>
             </p>
 
-            {/* Availability Badge */}
-            {availability && (
-              <div className="availability-tag">
-                <span className="status-dot"></span>
-                <strong>Availability:</strong> {availability}
-              </div>
-            )}
+            {/* Availability Badge & Quick Book Action */}
+            <div className="header-meta-row">
+              {availability && (
+                <div className="availability-tag">
+                  <span className="status-dot"></span>
+                  <strong>Availability:</strong> {availability}
+                </div>
+              )}
+              <button 
+                type="button" 
+                className="book-visit-header-btn"
+                onClick={() => setIsBookingOpen(true)}
+                id="book-visit-btn-main"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>Book a Visit</span>
+              </button>
+            </div>
           </div>
 
           {/* Property Specifications Section */}
@@ -240,6 +258,23 @@ function PropertyDetailsPage() {
                 ₹{rent.toLocaleString('en-IN')}<small> / month</small>
               </div>
               <p className="pricing-subtext">Direct from Owner • Zero Brokerage</p>
+
+              {/* Requirement 1: Clearly visible "Book a Visit" button */}
+              <button 
+                type="button" 
+                className="book-visit-primary-btn"
+                onClick={() => setIsBookingOpen(true)}
+                id="book-visit-btn-sidebar"
+                title="Schedule an in-person visit to inspect this space"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>Book a Visit</span>
+              </button>
             </div>
 
             {/* Sidebar Contact Owner Widget */}
@@ -253,6 +288,13 @@ function PropertyDetailsPage() {
           </div>
         </aside>
       </div>
+
+      {/* Step 11: Book a Visit Modal Component */}
+      <BookVisitModal
+        property={property}
+        isOpen={isBookingOpen}
+        onClose={() => setIsBookingOpen(false)}
+      />
     </div>
   );
 }
